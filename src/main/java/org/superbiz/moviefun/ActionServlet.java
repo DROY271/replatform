@@ -17,7 +17,11 @@
 package org.superbiz.moviefun;
 
 import org.apache.commons.lang.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.TransactionStatus;
 import org.superbiz.moviefun.movies.Movie;
 import org.superbiz.moviefun.movies.MoviesBean;
 
@@ -42,6 +46,10 @@ public class ActionServlet extends HttpServlet {
     @EJB
     private MoviesBean moviesBean;
 
+    @Autowired
+    @Qualifier("movies")
+    private PlatformTransactionManager tm;
+
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         process(request, response);
@@ -64,18 +72,20 @@ public class ActionServlet extends HttpServlet {
             int year = Integer.parseInt(request.getParameter("year"));
 
             Movie movie = new Movie(title, director, genre, rating, year);
-
+            TransactionStatus tx = tm.getTransaction(null);
             moviesBean.addMovie(movie);
+            tm.commit(tx);
             response.sendRedirect("moviefun");
             return;
 
         } else if ("Remove".equals(action)) {
 
+            TransactionStatus tx = tm.getTransaction(null);
             String[] ids = request.getParameterValues("id");
             for (String id : ids) {
                 moviesBean.deleteMovieId(new Long(id));
             }
-
+            tm.commit(tx);
             response.sendRedirect("moviefun");
             return;
 
