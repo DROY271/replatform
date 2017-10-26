@@ -16,7 +16,7 @@ logging.level:
   org.superbiz.moviefun: DEBUG
 
 s3:
-  endpointUrl: <aws endpoint>
-  accessKey: <access key id>
-  secretKey: <secret access key>
-  bucketName: <name of the bucket>
+  endpointUrl: http://127.0.0.1:9000
+  accessKey: MO4810REI439XQ2PL53Y
+  secretKey: 5086A8SIb1yp2V3/3yNufEm6/GjnQOAsZNmVLt/n
+  bucketName: moviefun
